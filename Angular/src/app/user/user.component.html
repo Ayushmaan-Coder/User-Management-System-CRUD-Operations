@@ -1,0 +1,145 @@
+<!-- user.component.html-->
+<br>
+<div class="container">
+  <div class="serial-subcontainer"> S.No</div>
+  <div class="subcontainer"> Organization Name </div>
+  <div class="subcontainer"> User Name</div>
+  <div class="subcontainer">Password</div>
+  <div class="subcontainer">Phone Number</div>
+  <div class="subcontainer">Email</div>
+  <div class="subcontainer">Registration Number</div>
+  <div class="subcontainer">IP addresses</div>
+</div>
+
+<br>
+
+<div class="container" *ngFor="let user of users">
+  <div class="serial-subcontainer">{{ user.id }}
+    <br><br>
+    <i class="fas fa-trash" (click)="deleteUser(user.id)" style="padding-right: 5px; cursor: pointer;"></i>
+    <button (click)="startUpdate(user); toggleIconVisibility()" *ngIf="showEditButton"  style=" cursor: pointer;">
+      <i class="fas fa-pencil-alt"></i>
+    </button>
+  </div>
+
+  <div class="subcontainer">
+    <ng-container *ngIf="!user.isEditingOrgName; else editOrgName">
+      {{ user.organization_name }}
+    </ng-container>
+    <br><br>
+    <ng-template #editOrgName>
+      <input [(ngModel)]="user.editedOrganizationName" (keyup.enter)="saveUser(user)">
+      <button (click)="saveUser(user); showEditButton = true" class="center-button" *ngIf="showEditButton">Update</button>
+    </ng-template>
+    <button (click)="editOrgNameField(user); showEditButton = true; startUpdate(user)" class="center-button" *ngIf="!user.isEditingOrgName && !showEditButton">Edit</button>
+  </div>
+
+  <div class="subcontainer">
+    <ng-container *ngIf="!user.isEditingUserName; else editUserName">
+      {{ user.user_name }}
+    </ng-container>
+    <br><br>
+    <ng-template #editUserName>
+      <input [(ngModel)]="user.editedUserName" (keyup.enter)="saveUser(user)">
+      <button (click)="saveUser(user)" class="center-button">Update</button>
+    </ng-template>
+    <button (click)="editUserNameField(user); startUpdate(user)" class="center-button" *ngIf="!user.isEditingUserName">Edit</button>
+  </div>
+
+  <div class="subcontainer">
+    <ng-container *ngIf="!user.isEditingPassword; else editPassword">
+      {{ user.password }}
+    </ng-container>
+    <br><br>
+    <ng-template #editPassword>
+      <input [(ngModel)]="user.editedPassword" (keyup.enter)="saveUser(user)">
+      <button (click)="saveUser(user)" class="center-button">Update</button>
+    </ng-template>
+    <button (click)="editPasswordField(user); startUpdate(user)" class="center-button" *ngIf="!user.isEditingPassword">Edit</button>
+  </div>
+
+  <div class="subcontainer">
+    <ng-container *ngIf="!user.isEditingPhoneNum; else editPhoneNum">
+      {{ user.phone_num }}
+    </ng-container>
+    <br><br>
+    <ng-template #editPhoneNum>
+      <input [(ngModel)]="user.editedPhoneNum" (keyup.enter)="saveUser(user)">
+      <button (click)="saveUser(user)" class="center-button">Update</button>
+    </ng-template>
+    <button (click)="editPhoneNumField(user); startUpdate(user)" class="center-button" *ngIf="!user.isEditingPhoneNum">Edit</button>
+  </div>
+
+  <div class="subcontainer">
+    <ng-container *ngIf="!user.isEditingEmail; else editEmail">
+      {{ user.email }}
+    </ng-container>
+    <br><br>
+    <ng-template #editEmail>
+      <input [(ngModel)]="user.editedEmail" (keyup.enter)="saveUser(user)">
+      <button (click)="saveUser(user)" class="center-button">Update</button>
+    </ng-template>
+    <button (click)="editEmailField(user); startUpdate(user)" class="center-button" *ngIf="!user.isEditingEmail">Edit</button>
+  </div>
+
+  <div class="subcontainer">
+    <ng-container *ngIf="!user.isEditingRegistrationNum; else editRegistrationNum">
+      {{ user.registration_num }}
+    </ng-container>
+    <br><br>
+    <ng-template #editRegistrationNum>
+      <input [(ngModel)]="user.editedRegistrationNum" (keyup.enter)="saveUser(user)">
+      <br><br>
+      <button (click)="saveUser(user)" class="center-button">Update</button>
+    </ng-template>
+    <button (click)="editRegistrationNumField(user); startUpdate(user)" class="center-button" *ngIf="!user.isEditingRegistrationNum">Edit</button>
+  </div>
+  
+  <div class="subcontainer">
+    <ul>
+      <li *ngFor="let ipAddress of user.ipaddress">
+        {{ ipAddress.ip_address }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+<div class="centered-form">
+  <button type="button" (click)="toggleFormVisibility(); hideAddUserButton()" *ngIf="showAddUserButton">Add User</button>
+  <div *ngIf="showForm">
+    <form [formGroup]="userForm" (ngSubmit)="createUser()">
+        <label for="organization_name">Organization Name:</label>
+        <input type="text" id="organization_name" name="organization_name" [(ngModel)]="user.organization_name" required class="small-input">
+      
+        <label for="user_name">User Name:</label>
+        <input type="text" id="user_name" name="user_name" [(ngModel)]="user.user_name" required class="small-input">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" [(ngModel)]="user.password" required class="small-input">
+
+        <label for="phone_num">Phone Number:</label>
+        <input type="text" id="phone_num" name="phone_num" [(ngModel)]="user.phone_num" required class="small-input">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" [(ngModel)]="user.email" required class="small-input">
+
+        <label for="registration_num">Registration Number:</label>
+        <input type="text" id="registration_num" name="registration_num" [(ngModel)]="user.registration_num" required class="small-input">
+
+        <div class="ip-address-group">
+          <label>IP Addresses:</label>
+          <div *ngFor="let ipaddress of userForm.get('ipaddresses')?.value; let i = index" class="ip-address-entry">
+            <input type="text" name="ip" [(ngModel)]="user.ip" required class="small-input">
+            <button type="button" (click)="removeIPAddress(i)">Remove</button>
+          </div>
+        </div>
+      
+        <div class="ip-address-group">
+          <button type="button" (click)="addIPAddress()">Add IP Address</button>
+        </div>
+
+      <button type="submit">Create User</button>
+    </form>
+  </div>
+</div>
